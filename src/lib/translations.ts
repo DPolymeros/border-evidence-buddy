@@ -253,6 +253,6 @@ export const translations = {
       other: "Άλλο",
     },
   },
-} as const;
+};
 
 export type Translations = typeof translations.en;
