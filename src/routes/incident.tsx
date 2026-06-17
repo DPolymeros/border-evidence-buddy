@@ -2,10 +2,23 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
 import { useMemo, useState } from "react";
 import { generateEvidenceId, saveIncident, type Incident } from "@/lib/storage";
+import { exportIncidentPdf } from "@/lib/pdf";
+
+type IncidentSearch = {
+  deviceType?: string;
+  power?: "yes" | "no" | "unknown" | "";
+  encryption?: "yes" | "no" | "unknown" | "";
+};
 
 export const Route = createFileRoute("/incident")({
   component: IncidentPage,
+  validateSearch: (s: Record<string, unknown>): IncidentSearch => ({
+    deviceType: typeof s.deviceType === "string" ? s.deviceType : undefined,
+    power: (["yes", "no", "unknown"].includes(s.power as string) ? s.power : undefined) as IncidentSearch["power"],
+    encryption: (["yes", "no", "unknown"].includes(s.encryption as string) ? s.encryption : undefined) as IncidentSearch["encryption"],
+  }),
 });
+
 
 type State = Omit<Incident, "id" | "createdAt">;
 
