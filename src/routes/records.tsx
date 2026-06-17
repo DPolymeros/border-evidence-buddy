@@ -42,14 +42,14 @@ function RecordsPage() {
       ) : (
         <div className="border border-border bg-card divide-y divide-border">
           {items.map((i) => (
-            <div key={i.id} className="p-4 flex items-center justify-between gap-3">
-              <div>
-                <div className="font-mono text-sm font-semibold">{i.id}</div>
+            <div key={i.id} className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="min-w-0">
+                <div className="font-mono text-sm font-semibold break-all">{i.id}</div>
                 <div className="text-xs text-muted-foreground">
                   {i.deviceType} — {i.make} {i.model} — {new Date(i.createdAt).toLocaleString()}
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 shrink-0">
                 <button className="px-3 py-1 text-xs border border-border" onClick={() => setSelected(i)}>{t.common.view}</button>
                 <button className="px-3 py-1 text-xs border border-border" onClick={() => exportIncidentPdf(i)}>
                   {t.common.exportPdf}
