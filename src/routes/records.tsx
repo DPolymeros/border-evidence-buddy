@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
 import { useEffect, useState } from "react";
 import { clearAll, deleteIncident, loadIncidents, type Incident } from "@/lib/storage";
+import { exportIncidentPdf } from "@/lib/pdf";
 
 export const Route = createFileRoute("/records")({
   component: RecordsPage,
