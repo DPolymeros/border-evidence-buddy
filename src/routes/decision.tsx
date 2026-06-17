@@ -123,8 +123,17 @@ function DecisionPage() {
             </div>
             <button
               className="px-4 py-2 bg-primary text-primary-foreground text-sm"
-              onClick={() => navigate({ to: "/incident" })}
-            >
+              onClick={() =>
+                navigate({
+                  to: "/incident",
+                  search: {
+                    deviceType: a.deviceType,
+                    power: a.poweredOn,
+                    encryption: a.encryption,
+                  },
+                })
+              }
+
               {t.common.startFromResult}
             </button>
           </div>
