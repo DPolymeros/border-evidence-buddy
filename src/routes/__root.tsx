@@ -76,6 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "BDEA — Border Digital Evidence Assistant" },
       { name: "description", content: "Decision support and chain of custody for digital evidence at EU external borders. Academic prototype." },
       { name: "author", content: "MSc Information Security & Digital Forensics — UEL" },
+      { property: "og:title", content: "BDEA — Border Digital Evidence Assistant" },
+      { name: "twitter:title", content: "BDEA — Border Digital Evidence Assistant" },
+      { property: "og:description", content: "Decision support and chain of custody for digital evidence at EU external borders. Academic prototype." },
+      { name: "twitter:description", content: "Decision support and chain of custody for digital evidence at EU external borders. Academic prototype." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2d011191-fa57-42e8-b733-f5038504fd5f/id-preview-f147169c--850d0be0-db37-45db-bafb-1f63bbbe14d0.lovable.app-1781687929994.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2d011191-fa57-42e8-b733-f5038504fd5f/id-preview-f147169c--850d0be0-db37-45db-bafb-1f63bbbe14d0.lovable.app-1781687929994.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       {
