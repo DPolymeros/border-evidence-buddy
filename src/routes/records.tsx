@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
 import { useEffect, useState } from "react";
 import { clearAll, deleteIncident, loadIncidents, type Incident } from "@/lib/storage";
+import { exportIncidentPdf } from "@/lib/pdf";
 
 export const Route = createFileRoute("/records")({
   component: RecordsPage,
@@ -50,9 +51,10 @@ function RecordsPage() {
               </div>
               <div className="flex gap-2">
                 <button className="px-3 py-1 text-xs border border-border" onClick={() => setSelected(i)}>{t.common.view}</button>
-                <button className="px-3 py-1 text-xs border border-border" onClick={() => alert("TODO: PDF export")}>
+                <button className="px-3 py-1 text-xs border border-border" onClick={() => exportIncidentPdf(i)}>
                   {t.common.exportPdf}
                 </button>
+
                 <button
                   className="px-3 py-1 text-xs bg-destructive text-destructive-foreground"
                   onClick={() => {

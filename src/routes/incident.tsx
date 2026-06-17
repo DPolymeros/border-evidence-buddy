@@ -2,10 +2,23 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
 import { useMemo, useState } from "react";
 import { generateEvidenceId, saveIncident, type Incident } from "@/lib/storage";
+import { exportIncidentPdf } from "@/lib/pdf";
+
+type IncidentSearch = {
+  deviceType?: string;
+  power?: "yes" | "no" | "unknown" | "";
+  encryption?: "yes" | "no" | "unknown" | "";
+};
 
 export const Route = createFileRoute("/incident")({
   component: IncidentPage,
+  validateSearch: (s: Record<string, unknown>): IncidentSearch => ({
+    deviceType: typeof s.deviceType === "string" ? s.deviceType : undefined,
+    power: (["yes", "no", "unknown"].includes(s.power as string) ? s.power : undefined) as IncidentSearch["power"],
+    encryption: (["yes", "no", "unknown"].includes(s.encryption as string) ? s.encryption : undefined) as IncidentSearch["encryption"],
+  }),
 });
+
 
 type State = Omit<Incident, "id" | "createdAt">;
 
@@ -47,10 +60,21 @@ const inputCls =
 function IncidentPage() {
   const { t } = useLang();
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [step, setStep] = useState(1);
   const totalSteps = 5;
-  const [data, setData] = useState<State>(initial);
+  const mapPower = (p?: string): State["power"] =>
+    p === "yes" ? "on" : p === "no" ? "off" : "unknown";
+  const mapYNU = (v?: string): "yes" | "no" | "unknown" =>
+    v === "yes" || v === "no" ? v : "unknown";
+  const [data, setData] = useState<State>(() => ({
+    ...initial(),
+    ...(search.deviceType ? { deviceType: search.deviceType } : {}),
+    ...(search.power ? { power: mapPower(search.power) } : {}),
+    ...(search.encryption ? { encryption: mapYNU(search.encryption) } : {}),
+  }));
   const evidenceId = useMemo(() => generateEvidenceId(), []);
+
 
   const update = <K extends keyof State>(k: K, v: State[K]) => setData((d) => ({ ...d, [k]: v }));
 
@@ -242,8 +266,11 @@ function IncidentPage() {
           <div className="flex gap-2">
             <button
               className="px-4 py-2 text-sm border border-border"
-              onClick={() => alert("TODO: PDF export")}
+              onClick={() =>
+                exportIncidentPdf({ ...data, id: evidenceId, createdAt: new Date().toISOString() })
+              }
             >
+
               {t.common.exportPdf}
             </button>
             <button
