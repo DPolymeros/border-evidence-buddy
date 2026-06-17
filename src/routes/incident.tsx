@@ -60,10 +60,21 @@ const inputCls =
 function IncidentPage() {
   const { t } = useLang();
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [step, setStep] = useState(1);
   const totalSteps = 5;
-  const [data, setData] = useState<State>(initial);
+  const mapPower = (p?: string): State["power"] =>
+    p === "yes" ? "on" : p === "no" ? "off" : "unknown";
+  const mapYNU = (v?: string): "yes" | "no" | "unknown" =>
+    v === "yes" || v === "no" ? v : "unknown";
+  const [data, setData] = useState<State>(() => ({
+    ...initial(),
+    ...(search.deviceType ? { deviceType: search.deviceType } : {}),
+    ...(search.power ? { power: mapPower(search.power) } : {}),
+    ...(search.encryption ? { encryption: mapYNU(search.encryption) } : {}),
+  }));
   const evidenceId = useMemo(() => generateEvidenceId(), []);
+
 
   const update = <K extends keyof State>(k: K, v: State[K]) => setData((d) => ({ ...d, [k]: v }));
 
