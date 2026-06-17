@@ -266,8 +266,11 @@ function IncidentPage() {
           <div className="flex gap-2">
             <button
               className="px-4 py-2 text-sm border border-border"
-              onClick={() => alert("TODO: PDF export")}
+              onClick={() =>
+                exportIncidentPdf({ ...data, id: evidenceId, createdAt: new Date().toISOString() })
+              }
             >
+
               {t.common.exportPdf}
             </button>
             <button
