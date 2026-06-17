@@ -15,44 +15,33 @@ type Answers = {
 };
 
 function buildResult(a: Answers, t: ReturnType<typeof useLang>["t"]) {
+  const A = t.decision.actions_;
   const actions: string[] = [];
-  actions.push("Photograph the device in situ before any physical contact.");
+  actions.push(A.photographFirst);
   if (a.poweredOn === "yes") {
-    actions.push("Do NOT power off. Preserve volatile memory and screen state.");
-    actions.push("Isolate from networks: enable airplane mode or use a Faraday bag.");
+    actions.push(A.doNotPowerOff);
+    actions.push(A.isolateNetwork);
     if (a.encryption === "yes") {
-      actions.push("If unlocked, do not allow the device to lock; consider live acquisition.");
+      actions.push(A.noLock);
     }
   } else if (a.poweredOn === "no") {
-    actions.push("Keep the device powered off. Do not boot it.");
-    actions.push("If a smartphone, remove SIM only if procedurally authorised; document.");
+    actions.push(A.keepOff);
+    actions.push(A.removeSim);
   } else {
-    actions.push("Treat power state as unknown: assume volatile data is at risk.");
+    actions.push(A.unknownPower);
   }
   if (a.witness === "no") {
-    actions.push("Locate and record an independent witness before sealing the device.");
+    actions.push(A.findWitness);
   }
-  actions.push("Place device in tamper-evident packaging and label with evidence ID.");
+  actions.push(A.tamperPackaging);
   if (a.pressure === "immediate") {
-    actions.push("Prioritise scene safety; document deviations from standard procedure.");
+    actions.push(A.prioritiseSafety);
   }
 
-  const iso =
-    a.poweredOn === "yes"
-      ? "ISO/IEC 27037 §5.4 — Acquisition of live systems: minimise change, document every action."
-      : "ISO/IEC 27037 §5.3 — Collection of powered-off systems: maintain integrity through preservation.";
+  const iso = a.poweredOn === "yes" ? t.decision.isoLive : t.decision.isoOff;
+  const acpo = a.poweredOn === "yes" ? t.decision.acpoLive : t.decision.acpoOff;
 
-  const acpo =
-    a.poweredOn === "yes"
-      ? "ACPO Principle 2 — A person must be competent to access original data and able to give evidence explaining the relevance and implications of their actions."
-      : "ACPO Principle 1 — No action should change data which may subsequently be relied upon in court.";
-
-  return {
-    actions,
-    iso,
-    acpo,
-    legal: t.decision.legalPlaceholder,
-  };
+  return { actions, iso, acpo, legal: t.decision.legalPlaceholder };
 }
 
 function DecisionPage() {
