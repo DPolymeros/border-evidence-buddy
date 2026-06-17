@@ -133,6 +133,8 @@ function DecisionPage() {
                   },
                 })
               }
+            >
+
 
               {t.common.startFromResult}
             </button>
