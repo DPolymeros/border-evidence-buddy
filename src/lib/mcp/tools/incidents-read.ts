@@ -6,7 +6,7 @@ function userClient(ctx: { getToken: () => string | undefined }) {
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
   return createClient(process.env.SUPABASE_URL!, key, {
     global: {
-      headers: { Authorization: `Bearer ${ctx.getToken()}`, apikey: key },
+      headers: { Authorization: `Bearer ${ctx.getToken() ?? ""}`, apikey: key },
       fetch: (input, init) => {
         const h = new Headers(init?.headers);
         if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
