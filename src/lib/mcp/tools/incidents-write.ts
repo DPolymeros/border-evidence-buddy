@@ -2,7 +2,7 @@ import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
 
-function userClient(ctx: { getToken: () => string }) {
+function userClient(ctx: { getToken: () => string | undefined }) {
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
   return createClient(process.env.SUPABASE_URL!, key, {
     global: {
