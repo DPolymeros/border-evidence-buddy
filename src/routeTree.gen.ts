@@ -10,11 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HandbookRouteImport } from './routes/handbook'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRecordsRouteImport } from './routes/_authenticated/records'
+import { Route as AuthenticatedIncidentRouteImport } from './routes/_authenticated/incident'
+import { Route as AuthenticatedDecisionRouteImport } from './routes/_authenticated/decision'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const HandbookRoute = HandbookRouteImport.update({
   id: '/handbook',
   path: '/handbook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,31 +37,93 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRecordsRoute = AuthenticatedRecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIncidentRoute = AuthenticatedIncidentRouteImport.update({
+  id: '/incident',
+  path: '/incident',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDecisionRoute = AuthenticatedDecisionRouteImport.update({
+  id: '/decision',
+  path: '/decision',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/handbook': typeof HandbookRoute
+  '/decision': typeof AuthenticatedDecisionRoute
+  '/incident': typeof AuthenticatedIncidentRoute
+  '/records': typeof AuthenticatedRecordsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/handbook': typeof HandbookRoute
+  '/decision': typeof AuthenticatedDecisionRoute
+  '/incident': typeof AuthenticatedIncidentRoute
+  '/records': typeof AuthenticatedRecordsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/handbook': typeof HandbookRoute
+  '/_authenticated/decision': typeof AuthenticatedDecisionRoute
+  '/_authenticated/incident': typeof AuthenticatedIncidentRoute
+  '/_authenticated/records': typeof AuthenticatedRecordsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/handbook'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/handbook'
+    | '/decision'
+    | '/incident'
+    | '/records'
+    | '/.lovable/oauth/consent'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/handbook'
-  id: '__root__' | '/' | '/handbook'
+  to:
+    | '/'
+    | '/auth'
+    | '/handbook'
+    | '/decision'
+    | '/incident'
+    | '/records'
+    | '/.lovable/oauth/consent'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/handbook'
+    | '/_authenticated/decision'
+    | '/_authenticated/incident'
+    | '/_authenticated/records'
+    | '/.lovable/oauth/consent'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   HandbookRoute: typeof HandbookRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +135,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HandbookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +156,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/records': {
+      id: '/_authenticated/records'
+      path: '/records'
+      fullPath: '/records'
+      preLoaderRoute: typeof AuthenticatedRecordsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/incident': {
+      id: '/_authenticated/incident'
+      path: '/incident'
+      fullPath: '/incident'
+      preLoaderRoute: typeof AuthenticatedIncidentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/decision': {
+      id: '/_authenticated/decision'
+      path: '/decision'
+      fullPath: '/decision'
+      preLoaderRoute: typeof AuthenticatedDecisionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDecisionRoute: typeof AuthenticatedDecisionRoute
+  AuthenticatedIncidentRoute: typeof AuthenticatedIncidentRoute
+  AuthenticatedRecordsRoute: typeof AuthenticatedRecordsRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDecisionRoute: AuthenticatedDecisionRoute,
+  AuthenticatedIncidentRoute: AuthenticatedIncidentRoute,
+  AuthenticatedRecordsRoute: AuthenticatedRecordsRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   HandbookRoute: HandbookRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
