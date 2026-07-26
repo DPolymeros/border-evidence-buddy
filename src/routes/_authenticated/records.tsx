@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { clearAll, deleteIncident, loadIncidents, type Incident } from "@/lib/storage";
 import { exportIncidentPdf } from "@/lib/pdf";
 
-export const Route = createFileRoute("/records")({
+export const Route = createFileRoute("/_authenticated/records")({
   component: RecordsPage,
 });
 
@@ -12,32 +12,40 @@ function RecordsPage() {
   const { t } = useLang();
   const [items, setItems] = useState<Incident[]>([]);
   const [selected, setSelected] = useState<Incident | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => setItems(loadIncidents()), []);
+  const refresh = async () => {
+    setLoading(true);
+    try {
+      setItems(await loadIncidents());
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const refresh = () => setItems(loadIncidents());
+  useEffect(() => { void refresh(); }, []);
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between border-l-4 border-primary pl-4">
         <h1 className="text-2xl font-bold">{t.records.title}</h1>
         {items.length > 0 && (
-          <button
-            className="px-3 py-2 text-sm bg-destructive text-destructive-foreground"
-            onClick={() => {
+          <button className="px-3 py-2 text-sm bg-destructive text-destructive-foreground"
+            onClick={async () => {
               if (confirm(t.records.confirmClear)) {
-                clearAll();
-                refresh();
+                await clearAll();
+                await refresh();
                 setSelected(null);
               }
-            }}
-          >
-            {t.common.clearAll}
-          </button>
+            }}>{t.common.clearAll}</button>
         )}
       </div>
 
-      {items.length === 0 ? (
+      {loading ? (
+        <p className="text-muted-foreground text-sm">…</p>
+      ) : items.length === 0 ? (
         <p className="text-muted-foreground text-sm">{t.common.noRecords}</p>
       ) : (
         <div className="border border-border bg-card divide-y divide-border">
@@ -51,22 +59,15 @@ function RecordsPage() {
               </div>
               <div className="flex flex-wrap gap-2 shrink-0">
                 <button className="px-3 py-1 text-xs border border-border" onClick={() => setSelected(i)}>{t.common.view}</button>
-                <button className="px-3 py-1 text-xs border border-border" onClick={() => exportIncidentPdf(i)}>
-                  {t.common.exportPdf}
-                </button>
-
-                <button
-                  className="px-3 py-1 text-xs bg-destructive text-destructive-foreground"
-                  onClick={() => {
+                <button className="px-3 py-1 text-xs border border-border" onClick={() => exportIncidentPdf(i)}>{t.common.exportPdf}</button>
+                <button className="px-3 py-1 text-xs bg-destructive text-destructive-foreground"
+                  onClick={async () => {
                     if (confirm(t.records.confirmDelete)) {
-                      deleteIncident(i.id);
-                      refresh();
+                      await deleteIncident(i.id);
+                      await refresh();
                       if (selected?.id === i.id) setSelected(null);
                     }
-                  }}
-                >
-                  {t.common.delete}
-                </button>
+                  }}>{t.common.delete}</button>
               </div>
             </div>
           ))}

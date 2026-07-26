@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
 import { useState } from "react";
 
-export const Route = createFileRoute("/decision")({
+export const Route = createFileRoute("/_authenticated/decision")({
   component: DecisionPage,
 });
 
@@ -21,26 +21,19 @@ function buildResult(a: Answers, t: ReturnType<typeof useLang>["t"]) {
   if (a.poweredOn === "yes") {
     actions.push(A.doNotPowerOff);
     actions.push(A.isolateNetwork);
-    if (a.encryption === "yes") {
-      actions.push(A.noLock);
-    }
+    if (a.encryption === "yes") actions.push(A.noLock);
   } else if (a.poweredOn === "no") {
     actions.push(A.keepOff);
     actions.push(A.removeSim);
   } else {
     actions.push(A.unknownPower);
   }
-  if (a.witness === "no") {
-    actions.push(A.findWitness);
-  }
+  if (a.witness === "no") actions.push(A.findWitness);
   actions.push(A.tamperPackaging);
-  if (a.pressure === "immediate") {
-    actions.push(A.prioritiseSafety);
-  }
+  if (a.pressure === "immediate") actions.push(A.prioritiseSafety);
 
   const iso = a.poweredOn === "yes" ? t.decision.isoLive : t.decision.isoOff;
   const acpo = a.poweredOn === "yes" ? t.decision.acpoLive : t.decision.acpoOff;
-
   return { actions, iso, acpo, legal: t.decision.legalPlaceholder };
 }
 
@@ -58,10 +51,8 @@ function DecisionPage() {
     </div>
   );
   const Opt = ({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) => (
-    <button
-      onClick={onClick}
-      className={`px-3 py-2 text-sm border ${active ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:border-primary"}`}
-    >
+    <button onClick={onClick}
+      className={`px-3 py-2 text-sm border ${active ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:border-primary"}`}>
       {children}
     </button>
   );
@@ -72,7 +63,6 @@ function DecisionPage() {
         <h1 className="text-2xl font-bold">{t.decision.title}</h1>
         <p className="text-sm text-muted-foreground mt-1">{t.decision.subtitle}</p>
       </div>
-
       <div className="grid gap-3">
         <Q label={`1. ${t.decision.q1}`}>
           {Object.entries(t.deviceTypes).map(([k, v]) => (
@@ -121,21 +111,9 @@ function DecisionPage() {
               <h3 className="font-semibold text-sm uppercase tracking-wide text-foreground/70">{t.decision.legal}</h3>
               <p className="text-sm mt-1">{result.legal}</p>
             </div>
-            <button
-              className="px-4 py-2 bg-primary text-primary-foreground text-sm"
-              onClick={() =>
-                navigate({
-                  to: "/incident",
-                  search: {
-                    deviceType: a.deviceType,
-                    power: a.poweredOn,
-                    encryption: a.encryption,
-                  },
-                })
-              }
-            >
-
-
+            <button className="px-4 py-2 bg-primary text-primary-foreground text-sm"
+              onClick={() => navigate({ to: "/incident",
+                search: { deviceType: a.deviceType, power: a.poweredOn, encryption: a.encryption } })}>
               {t.common.startFromResult}
             </button>
           </div>

@@ -1,53 +1,27 @@
-export type Incident = {
-  id: string;
-  createdAt: string;
-  caseNumber: string;
-  dateTime: string;
-  location: string;
-  borderPoint: string;
-  officerName: string;
-  badgeId: string;
-  agency: string;
-  witnessName: string;
-  witnessId: string;
-  deviceType: string;
-  make: string;
-  model: string;
-  serial: string;
-  imei: string;
-  condition: string;
-  power: "on" | "off" | "unknown";
-  screenLocked: "yes" | "no" | "unknown";
-  encryption: "yes" | "no" | "unknown";
-  network: string;
-  circumstances: string;
-  photo?: string; // base64
-};
+import {
+  listIncidentsFn,
+  saveIncidentFn,
+  deleteIncidentFn,
+  clearIncidentsFn,
+} from "./incidents.functions";
+import type { Incident } from "./incidents.shape";
 
-const KEY = "bdea_incidents";
+export type { Incident } from "./incidents.shape";
 
-export function loadIncidents(): Incident[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem(KEY) || "[]");
-  } catch {
-    return [];
-  }
+export async function loadIncidents(): Promise<Incident[]> {
+  return await listIncidentsFn();
 }
 
-export function saveIncident(i: Incident) {
-  const all = loadIncidents();
-  all.unshift(i);
-  localStorage.setItem(KEY, JSON.stringify(all));
+export async function saveIncident(i: Incident): Promise<void> {
+  await saveIncidentFn({ data: i });
 }
 
-export function deleteIncident(id: string) {
-  const all = loadIncidents().filter((i) => i.id !== id);
-  localStorage.setItem(KEY, JSON.stringify(all));
+export async function deleteIncident(id: string): Promise<void> {
+  await deleteIncidentFn({ data: { id } });
 }
 
-export function clearAll() {
-  localStorage.removeItem(KEY);
+export async function clearAll(): Promise<void> {
+  await clearIncidentsFn();
 }
 
 export function generateEvidenceId(): string {
