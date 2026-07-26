@@ -14,7 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      incidents: {
+        Row: {
+          agency: string
+          badge_id: string
+          border_point: string
+          case_number: string
+          circumstances: string
+          condition: string
+          created_at: string
+          date_time: string
+          device_type: string
+          encryption: string
+          evidence_id: string
+          id: string
+          imei: string
+          location: string
+          make: string
+          model: string
+          network: string
+          officer_name: string
+          photo: string | null
+          power: string
+          screen_locked: string
+          serial: string
+          user_id: string
+          witness_id: string
+          witness_name: string
+        }
+        Insert: {
+          agency?: string
+          badge_id?: string
+          border_point?: string
+          case_number?: string
+          circumstances?: string
+          condition?: string
+          created_at?: string
+          date_time?: string
+          device_type?: string
+          encryption?: string
+          evidence_id: string
+          id?: string
+          imei?: string
+          location?: string
+          make?: string
+          model?: string
+          network?: string
+          officer_name?: string
+          photo?: string | null
+          power?: string
+          screen_locked?: string
+          serial?: string
+          user_id: string
+          witness_id?: string
+          witness_name?: string
+        }
+        Update: {
+          agency?: string
+          badge_id?: string
+          border_point?: string
+          case_number?: string
+          circumstances?: string
+          condition?: string
+          created_at?: string
+          date_time?: string
+          device_type?: string
+          encryption?: string
+          evidence_id?: string
+          id?: string
+          imei?: string
+          location?: string
+          make?: string
+          model?: string
+          network?: string
+          officer_name?: string
+          photo?: string | null
+          power?: string
+          screen_locked?: string
+          serial?: string
+          user_id?: string
+          witness_id?: string
+          witness_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
