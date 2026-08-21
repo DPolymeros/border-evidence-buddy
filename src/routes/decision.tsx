@@ -128,7 +128,9 @@ function DecisionPage() {
                     search: { deviceType: a.deviceType, power: a.poweredOn, encryption: a.encryption } });
                 } else {
                   navigate({ to: "/auth",
-                    search: { redirect: "incident", deviceType: a.deviceType, power: a.poweredOn, encryption: a.encryption } });
+                    search: { redirect: "incident", deviceType: a.deviceType,
+                      power: a.poweredOn as "yes" | "no" | "unknown",
+                      encryption: a.encryption as "yes" | "no" | "unknown" } });
                 }
               }}>
               {t.common.startFromResult}
