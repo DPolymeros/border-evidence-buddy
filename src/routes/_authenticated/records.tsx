@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
 import { useEffect, useState } from "react";
-import { clearAll, deleteIncident, loadIncidents, type Incident } from "@/lib/storage";
+import { clearAll, deleteIncident, loadIncidents, saveIncident, type Handover, type Incident } from "@/lib/storage";
 import { exportIncidentPdf } from "@/lib/pdf";
+import { emptyHandover, HandoverFields } from "@/components/HandoverEditor";
 
 export const Route = createFileRoute("/_authenticated/records")({
   component: RecordsPage,
@@ -12,8 +13,31 @@ function RecordsPage() {
   const { t, lang } = useLang();
   const [items, setItems] = useState<Incident[]>([]);
   const [selected, setSelected] = useState<Incident | null>(null);
+  const [adding, setAdding] = useState<Handover | null>(null);
+  const [savingHandover, setSavingHandover] = useState(false);
   const [loading, setLoading] = useState(true);
   const locale = lang === "el" ? "el-GR" : "en-GB";
+
+  const openRecord = (i: Incident) => {
+    setSelected(i);
+    setAdding(null);
+  };
+
+  const saveHandover = async () => {
+    if (!selected || !adding) return;
+    setSavingHandover(true);
+    try {
+      const updated: Incident = { ...selected, handovers: [...(selected.handovers ?? []), adding] };
+      await saveIncident(updated);
+      setSelected(updated);
+      setAdding(null);
+      await refresh();
+    } catch (e) {
+      alert("Save failed: " + (e instanceof Error ? e.message : String(e)));
+    } finally {
+      setSavingHandover(false);
+    }
+  };
 
   const refresh = async () => {
     setLoading(true);
