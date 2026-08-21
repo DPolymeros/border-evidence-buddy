@@ -23,29 +23,34 @@ function HandbookPage() {
       </div>
       <div className="grid gap-4">
         <Section title={t.handbook.iso}>
-          <p>{t.handbook.isoPhases}</p>
-          <ul className="list-disc pl-5 text-muted-foreground">
-            <li>Identification</li>
-            <li>Collection</li>
-            <li>Acquisition</li>
-            <li>Preservation</li>
-          </ul>
-          <p className="text-muted-foreground italic">{t.handbook.placeholder}</p>
+          <p>{t.handbook.isoBody}</p>
         </Section>
         <Section title={t.handbook.acpo}>
           <ol className="list-decimal pl-5 space-y-1">
-            <li>No action should change data which may subsequently be relied upon in court.</li>
-            <li>A person must be competent to access original data.</li>
-            <li>An audit trail of all processes applied to evidence should be created.</li>
-            <li>The case officer has overall responsibility for compliance.</li>
+            {t.handbook.acpoList.map((p, i) => <li key={i}>{p}</li>)}
           </ol>
-          <p className="text-muted-foreground italic">{t.handbook.placeholder}</p>
         </Section>
         <Section title={t.handbook.devices}>
-          <p className="text-muted-foreground italic">{t.handbook.placeholder}</p>
+          <div className="space-y-4">
+            {Object.entries(t.deviceTypes).map(([key, label]) => (
+              <div key={key}>
+                <h3 className="font-semibold">{label}</h3>
+                <p className="text-muted-foreground">
+                  {t.handbook.deviceGuides[key as keyof typeof t.handbook.deviceGuides]}
+                </p>
+              </div>
+            ))}
+          </div>
         </Section>
         <Section title={t.handbook.glossary}>
-          <p className="text-muted-foreground italic">{t.handbook.placeholder}</p>
+          <dl className="space-y-2">
+            {t.handbook.glossaryList.map((g, i) => (
+              <div key={i}>
+                <dt className="font-semibold">{g.term}</dt>
+                <dd className="text-muted-foreground">{g.def}</dd>
+              </div>
+            ))}
+          </dl>
         </Section>
       </div>
     </div>

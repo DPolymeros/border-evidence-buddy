@@ -9,10 +9,11 @@ export const Route = createFileRoute("/_authenticated/records")({
 });
 
 function RecordsPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [items, setItems] = useState<Incident[]>([]);
   const [selected, setSelected] = useState<Incident | null>(null);
   const [loading, setLoading] = useState(true);
+  const locale = lang === "el" ? "el-GR" : "en-GB";
 
   const refresh = async () => {
     setLoading(true);
@@ -83,9 +84,9 @@ function RecordsPage() {
           <div className="p-4 text-sm grid grid-cols-1 md:grid-cols-2 gap-2">
             {[
               { key: "id", label: t.incident.evidenceId },
-              { key: "createdAt", label: t.incident.dateTime },
+              { key: "createdAt", label: t.records.createdAtLabel },
               { key: "caseNumber", label: t.incident.caseNumber },
-              { key: "dateTime", label: t.incident.dateTime },
+              { key: "dateTime", label: t.records.dateTimeLabel },
               { key: "location", label: t.incident.location },
               { key: "borderPoint", label: t.incident.borderPoint },
               { key: "officerName", label: t.incident.officerName },
@@ -108,13 +109,14 @@ function RecordsPage() {
               const v = selected[key as keyof Incident];
               if (!v) return null;
               let display = String(v);
-              if (key === "deviceType") display = t.deviceTypes[v as keyof typeof t.deviceTypes] ?? String(v);
+              if (key === "createdAt" || key === "dateTime") display = new Date(String(v)).toLocaleString(locale);
+              else if (key === "deviceType") display = t.deviceTypes[v as keyof typeof t.deviceTypes] ?? String(v);
               else if (key === "agency") display = t.agencies[v as keyof typeof t.agencies] ?? String(v);
               else if (key === "power") display = v === "on" ? t.incident.poweredOn : v === "off" ? t.incident.poweredOff : t.common.unknown;
               else if (key === "screenLocked" || key === "encryption") display = v === "yes" ? t.common.yes : v === "no" ? t.common.no : t.common.unknown;
               return (
                 <div key={key} className="border-b border-border pb-1">
-                  <span className="text-xs uppercase tracking-wide text-muted-foreground">{label}: </span>
+                  <span className={`text-xs tracking-wide text-muted-foreground ${lang === "el" ? "" : "uppercase"}`}>{label}: </span>
                   <span>{display}</span>
                 </div>
               );

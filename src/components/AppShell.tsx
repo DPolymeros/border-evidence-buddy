@@ -38,17 +38,17 @@ function Header() {
 
   return (
     <header className="bg-primary text-primary-foreground border-b-4 border-accent">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="bg-primary-foreground text-primary font-bold px-2 py-1 text-sm tracking-wider">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <Link to="/" className="flex items-center gap-3 w-full sm:w-auto min-w-0">
+          <div className="bg-primary-foreground text-primary font-bold px-2 py-1 text-sm tracking-wider shrink-0">
             {t.acronym}
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="font-semibold text-sm leading-tight">{t.appName}</div>
             <div className="text-xs text-primary-foreground/70">{t.appSubtitle}</div>
           </div>
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs px-2 py-1 bg-accent text-accent-foreground rounded-sm font-medium">
             {t.prototypeBadge}
           </span>

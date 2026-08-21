@@ -38,7 +38,7 @@ function buildResult(a: Answers, t: ReturnType<typeof useLang>["t"]) {
 }
 
 function DecisionPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const navigate = useNavigate();
   const [a, setA] = useState<Answers>({ deviceType: "smartphone", poweredOn: "", encryption: "", witness: "", pressure: "" });
   const complete = a.poweredOn && a.encryption && a.witness && a.pressure;
@@ -94,21 +94,21 @@ function DecisionPage() {
           <div className="bg-primary text-primary-foreground px-4 py-2 font-semibold">{t.decision.result}</div>
           <div className="p-4 space-y-4">
             <div>
-              <h3 className="font-semibold text-sm uppercase tracking-wide text-foreground/70 mb-2">{t.decision.actions}</h3>
+              <h3 className={`font-semibold text-sm tracking-wide text-foreground/70 mb-2 ${lang === "el" ? "" : "uppercase"}`}>{t.decision.actions}</h3>
               <ol className="list-decimal pl-5 space-y-1 text-sm">
                 {result.actions.map((x, i) => <li key={i}>{x}</li>)}
               </ol>
             </div>
             <div className="border-t border-border pt-3">
-              <h3 className="font-semibold text-sm uppercase tracking-wide text-foreground/70">{t.decision.iso}</h3>
+              <h3 className={`font-semibold text-sm tracking-wide text-foreground/70 ${lang === "el" ? "" : "uppercase"}`}>{t.decision.iso}</h3>
               <p className="text-sm mt-1">{result.iso}</p>
             </div>
             <div>
-              <h3 className="font-semibold text-sm uppercase tracking-wide text-foreground/70">{t.decision.acpo}</h3>
+              <h3 className={`font-semibold text-sm tracking-wide text-foreground/70 ${lang === "el" ? "" : "uppercase"}`}>{t.decision.acpo}</h3>
               <p className="text-sm mt-1">{result.acpo}</p>
             </div>
             <div className="bg-secondary p-3 border-l-4 border-accent">
-              <h3 className="font-semibold text-sm uppercase tracking-wide text-foreground/70">{t.decision.legal}</h3>
+              <h3 className={`font-semibold text-sm tracking-wide text-foreground/70 ${lang === "el" ? "" : "uppercase"}`}>{t.decision.legal}</h3>
               <p className="text-sm mt-1">{result.legal}</p>
             </div>
             <button className="px-4 py-2 bg-primary text-primary-foreground text-sm"

@@ -12,6 +12,10 @@ export function LangProvider({ children }: { children: ReactNode }) {
     if (saved === "en" || saved === "el") setLangState(saved);
   }, []);
 
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.lang = lang;
+  }, [lang]);
+
   const setLang = (l: Lang) => {
     setLangState(l);
     if (typeof window !== "undefined") localStorage.setItem("bdea_lang", l);

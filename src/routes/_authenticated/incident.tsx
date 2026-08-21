@@ -45,9 +45,10 @@ const initial = (): State => ({
 });
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const { lang } = useLang();
   return (
     <label className="block">
-      <span className="text-xs font-medium text-foreground/80 uppercase tracking-wide">{label}</span>
+      <span className={`text-xs font-medium text-foreground/80 tracking-wide ${lang === "el" ? "" : "uppercase"}`}>{label}</span>
       <div className="mt-1">{children}</div>
     </label>
   );

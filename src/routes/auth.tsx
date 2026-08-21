@@ -17,7 +17,7 @@ const inputCls =
   "w-full border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:border-primary";
 
 function AuthPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -79,11 +79,11 @@ function AuthPage() {
         <div className="text-center text-xs text-muted-foreground">{t.auth.or}</div>
         <form onSubmit={submit} className="space-y-3">
           <label className="block">
-            <span className="text-xs font-medium uppercase tracking-wide">{t.auth.email}</span>
+            <span className={`text-xs font-medium tracking-wide ${lang === "el" ? "" : "uppercase"}`}>{t.auth.email}</span>
             <input type="email" required className={inputCls + " mt-1"} value={email} onChange={(e) => setEmail(e.target.value)} />
           </label>
           <label className="block">
-            <span className="text-xs font-medium uppercase tracking-wide">{t.auth.password}</span>
+            <span className={`text-xs font-medium tracking-wide ${lang === "el" ? "" : "uppercase"}`}>{t.auth.password}</span>
             <input type="password" required minLength={6} className={inputCls + " mt-1"} value={password} onChange={(e) => setPassword(e.target.value)} />
           </label>
           {err && <p className="text-xs text-destructive">{err}</p>}
