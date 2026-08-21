@@ -38,7 +38,7 @@ function buildResult(a: Answers, t: ReturnType<typeof useLang>["t"]) {
 }
 
 function DecisionPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const navigate = useNavigate();
   const [a, setA] = useState<Answers>({ deviceType: "smartphone", poweredOn: "", encryption: "", witness: "", pressure: "" });
   const complete = a.poweredOn && a.encryption && a.witness && a.pressure;

@@ -17,7 +17,7 @@ const inputCls =
   "w-full border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:border-primary";
 
 function AuthPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
