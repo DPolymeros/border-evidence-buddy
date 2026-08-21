@@ -99,7 +99,7 @@ export function incidentToRow(i: Incident, userId: string) {
     network: i.network,
     circumstances: i.circumstances,
     photo: i.photo ?? null,
-    handovers: (i.handovers ?? []) as unknown as Record<string, unknown>[],
+    handovers: (i.handovers ?? []) as unknown as import("@/integrations/supabase/types").Json,
     created_at: i.createdAt,
   };
 }

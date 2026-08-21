@@ -6,7 +6,7 @@ import {
 } from "./incidents.functions";
 import type { Incident } from "./incidents.shape";
 
-export type { Incident } from "./incidents.shape";
+export type { Incident, Handover } from "./incidents.shape";
 
 export async function loadIncidents(): Promise<Incident[]> {
   return await listIncidentsFn();
