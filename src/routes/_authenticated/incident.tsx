@@ -3,6 +3,7 @@ import { useLang } from "@/lib/lang";
 import { useMemo, useState } from "react";
 import { generateEvidenceId, saveIncident, type Incident } from "@/lib/storage";
 import { exportIncidentPdf } from "@/lib/pdf";
+import { emptyHandover, HandoverFields } from "@/components/HandoverEditor";
 
 type IncidentSearch = {
   deviceType?: string;
@@ -42,6 +43,7 @@ const initial = (): State => ({
   encryption: "unknown",
   network: "",
   circumstances: "",
+  handovers: [],
 });
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -63,7 +65,7 @@ function IncidentPage() {
   const search = Route.useSearch();
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
-  const totalSteps = 5;
+  const totalSteps = 6;
   const mapPower = (p?: string): State["power"] =>
     p === "yes" ? "on" : p === "no" ? "off" : "unknown";
   const mapYNU = (v?: string): "yes" | "no" | "unknown" =>
@@ -206,6 +208,27 @@ function IncidentPage() {
               <input type="file" accept="image/*" onChange={onPhoto} className="text-sm" />
               {data.photo && <img src={data.photo} alt="" className="mt-2 max-h-40 border border-border" />}
             </Field>
+          </>
+        )}
+        {step === 6 && (
+          <>
+            <h2 className="font-semibold text-lg">{t.handovers.title}</h2>
+            {data.handovers.map((h, idx) => (
+              <div key={idx} className="border border-border p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sm">{t.handovers.item} #{h.seq}</span>
+                  <button type="button" className="px-3 py-1 text-xs bg-destructive text-destructive-foreground"
+                    onClick={() => update("handovers", data.handovers.filter((_, i) => i !== idx).map((x, i) => ({ ...x, seq: i + 1 })))}>
+                    {t.handovers.remove}
+                  </button>
+                </div>
+                <HandoverFields h={h} onChange={(next) => update("handovers", data.handovers.map((x, i) => (i === idx ? next : x)))} />
+              </div>
+            ))}
+            <button type="button" className="px-4 py-2 text-sm border border-border bg-secondary"
+              onClick={() => update("handovers", [...data.handovers, emptyHandover(data.handovers.length + 1)])}>
+              {t.handovers.add}
+            </button>
           </>
         )}
       </div>
