@@ -27,6 +27,7 @@ export type Database = {
           device_type: string
           encryption: string
           evidence_id: string
+          handovers: Json
           id: string
           imei: string
           location: string
@@ -54,6 +55,7 @@ export type Database = {
           device_type?: string
           encryption?: string
           evidence_id: string
+          handovers?: Json
           id?: string
           imei?: string
           location?: string
@@ -81,6 +83,7 @@ export type Database = {
           device_type?: string
           encryption?: string
           evidence_id?: string
+          handovers?: Json
           id?: string
           imei?: string
           location?: string

@@ -1,0 +1,1 @@
+ALTER TABLE public.incidents ADD COLUMN IF NOT EXISTS handovers jsonb NOT NULL DEFAULT '[]'::jsonb;
