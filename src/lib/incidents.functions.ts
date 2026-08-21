@@ -3,6 +3,22 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { INCIDENT_COLUMNS, rowToIncident, incidentToRow, type Incident } from "./incidents.shape";
 
+const HandoverInput = z.object({
+  seq: z.number().int().default(1),
+  dateTime: z.string().default(""),
+  fromName: z.string().default(""),
+  fromBadge: z.string().default(""),
+  fromAgency: z.string().default(""),
+  toName: z.string().default(""),
+  toBadge: z.string().default(""),
+  toUnit: z.string().default(""),
+  place: z.string().default(""),
+  reason: z.string().default(""),
+  sealState: z.string().default("intact"),
+  sealNumber: z.string().default(""),
+  notes: z.string().default(""),
+});
+
 const IncidentInput = z.object({
   id: z.string().min(1),
   createdAt: z.string().min(1),
@@ -27,6 +43,7 @@ const IncidentInput = z.object({
   network: z.string().default(""),
   circumstances: z.string().default(""),
   photo: z.string().optional(),
+  handovers: z.array(HandoverInput).optional().default([]),
 });
 
 export const listIncidentsFn = createServerFn({ method: "GET" })

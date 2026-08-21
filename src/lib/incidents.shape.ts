@@ -1,3 +1,19 @@
+export type Handover = {
+  seq: number;
+  dateTime: string;
+  fromName: string;
+  fromBadge: string;
+  fromAgency: string;
+  toName: string;
+  toBadge: string;
+  toUnit: string;
+  place: string;
+  reason: string;
+  sealState: string;
+  sealNumber: string;
+  notes: string;
+};
+
 export type Incident = {
   id: string;
   createdAt: string;
@@ -22,10 +38,11 @@ export type Incident = {
   network: string;
   circumstances: string;
   photo?: string;
+  handovers: Handover[];
 };
 
 export const INCIDENT_COLUMNS =
-  "evidence_id, created_at, case_number, date_time, location, border_point, officer_name, badge_id, agency, witness_name, witness_id, device_type, make, model, serial, imei, condition, power, screen_locked, encryption, network, circumstances, photo";
+  "evidence_id, created_at, case_number, date_time, location, border_point, officer_name, badge_id, agency, witness_name, witness_id, device_type, make, model, serial, imei, condition, power, screen_locked, encryption, network, circumstances, photo, handovers";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function rowToIncident(r: any): Incident {
@@ -53,6 +70,7 @@ export function rowToIncident(r: any): Incident {
     network: r.network ?? "",
     circumstances: r.circumstances ?? "",
     photo: r.photo ?? undefined,
+    handovers: Array.isArray(r.handovers) ? (r.handovers as Handover[]) : [],
   };
 }
 
@@ -81,6 +99,7 @@ export function incidentToRow(i: Incident, userId: string) {
     network: i.network,
     circumstances: i.circumstances,
     photo: i.photo ?? null,
+    handovers: (i.handovers ?? []) as unknown as import("@/integrations/supabase/types").Json,
     created_at: i.createdAt,
   };
 }
