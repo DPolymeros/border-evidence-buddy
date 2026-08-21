@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/decision")({
+export const Route = createFileRoute("/decision")({
   component: DecisionPage,
 });
 
@@ -41,8 +42,17 @@ function DecisionPage() {
   const { t, lang } = useLang();
   const navigate = useNavigate();
   const [a, setA] = useState<Answers>({ deviceType: "smartphone", poweredOn: "", encryption: "", witness: "", pressure: "" });
+  const [signedIn, setSignedIn] = useState(false);
   const complete = a.poweredOn && a.encryption && a.witness && a.pressure;
   const result = complete ? buildResult(a, t) : null;
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setSignedIn(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const Q = ({ label, children }: { label: string; children: React.ReactNode }) => (
     <div className="border border-border p-4 bg-card">
@@ -112,8 +122,15 @@ function DecisionPage() {
               <p className="text-sm mt-1">{result.legal}</p>
             </div>
             <button className="px-4 py-2 bg-primary text-primary-foreground text-sm"
-              onClick={() => navigate({ to: "/incident",
-                search: { deviceType: a.deviceType, power: a.poweredOn, encryption: a.encryption } })}>
+              onClick={() => {
+                if (signedIn) {
+                  navigate({ to: "/incident",
+                    search: { deviceType: a.deviceType, power: a.poweredOn, encryption: a.encryption } });
+                } else {
+                  navigate({ to: "/auth",
+                    search: { redirect: "incident", deviceType: a.deviceType, power: a.poweredOn, encryption: a.encryption } });
+                }
+              }}>
               {t.common.startFromResult}
             </button>
           </div>
