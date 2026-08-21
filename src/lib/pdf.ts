@@ -81,6 +81,70 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
       y += blockH;
     }
 
+    const AGENCY_EN: Record<string, string> = { hellenic: "Hellenic Police", frontex: "Frontex", other: "Other" };
+    const REASON_EN: Record<string, string> = {
+      transport: "Transport to storage facility",
+      investigation: "Handover to investigation unit",
+      laboratory: "Handover to forensic laboratory",
+      return: "Return to owner",
+      other: "Other",
+    };
+    const SEAL_EN: Record<string, string> = { intact: "Intact", broken: "Broken", na: "Not applicable" };
+
+    const handovers = incident.handovers ?? [];
+    if (y + 40 > pageH - margin - 30) { doc.addPage(); y = margin; }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Chain of Custody Handovers", margin, y);
+    y += 18;
+    doc.setFontSize(10);
+    if (handovers.length === 0) {
+      doc.setFont("helvetica", "normal");
+      doc.text("No handovers recorded.", margin, y);
+      y += 14;
+    } else {
+      for (const h of handovers) {
+        if (y + 60 > pageH - margin - 30) { doc.addPage(); y = margin; }
+        doc.setFont("helvetica", "bold");
+        doc.text(`Handover #${h.seq}`, margin, y);
+        y += 14;
+        const entries: [string, string][] = [
+          ["Date / Time", h.dateTime],
+          ["Handed Over By", h.fromName],
+          ["Badge ID", h.fromBadge],
+          ["Agency", AGENCY_EN[h.fromAgency] ?? h.fromAgency],
+          ["Received By", h.toName],
+          ["Badge ID", h.toBadge],
+          ["Receiving Unit", h.toUnit],
+          ["Place", h.place],
+          ["Reason", REASON_EN[h.reason] ?? h.reason],
+          ["Seal State", SEAL_EN[h.sealState] ?? h.sealState],
+          ["Seal Number", h.sealNumber],
+          ["Remarks", h.notes],
+        ];
+        for (const [label, val] of entries) {
+          if (!val) continue;
+          const lines = doc.splitTextToSize(String(val), valueW);
+          const blockH = Math.max(14, lines.length * 12 + 4);
+          if (y + blockH > pageH - margin - 30) { doc.addPage(); y = margin; }
+          doc.setFont("helvetica", "bold");
+          doc.text(`${label}:`, margin, y);
+          doc.setFont("helvetica", "normal");
+          doc.text(lines, margin + labelW, y);
+          y += blockH;
+        }
+        if (y + 60 > pageH - margin - 30) { doc.addPage(); y = margin; }
+        y += 12;
+        doc.setFont("helvetica", "bold");
+        doc.text("Releasing officer signature:", margin, y);
+        doc.text("Receiving officer signature:", pageW / 2 + 10, y);
+        doc.setDrawColor(0, 0, 0);
+        doc.line(margin, y + 30, margin + 200, y + 30);
+        doc.line(pageW / 2 + 10, y + 30, pageW / 2 + 210, y + 30);
+        y += 48;
+      }
+    }
+
     if (incident.photo && incident.photo.startsWith("data:image/")) {
       const imgH = 220;
       if (y + imgH + 20 > pageH - margin - 30) { doc.addPage(); y = margin; }
