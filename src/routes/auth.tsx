@@ -4,11 +4,32 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useLang } from "@/lib/lang";
 
+type AuthSearch = {
+  redirect?: string;
+  deviceType?: string;
+  power?: "yes" | "no" | "unknown";
+  encryption?: "yes" | "no" | "unknown";
+};
+
 export const Route = createFileRoute("/auth")({
   ssr: false,
-  beforeLoad: async () => {
+  validateSearch: (s: Record<string, unknown>): AuthSearch => ({
+    redirect: s.redirect === "incident" ? "incident" : undefined,
+    deviceType: typeof s.deviceType === "string" ? s.deviceType : undefined,
+    power: (["yes", "no", "unknown"].includes(s.power as string) ? s.power : undefined) as AuthSearch["power"],
+    encryption: (["yes", "no", "unknown"].includes(s.encryption as string) ? s.encryption : undefined) as AuthSearch["encryption"],
+  }),
+  beforeLoad: async ({ search }) => {
     const { data } = await supabase.auth.getSession();
-    if (data.session) throw redirect({ to: "/records" });
+    if (data.session) {
+      if (search.redirect === "incident") {
+        throw redirect({
+          to: "/incident",
+          search: { deviceType: search.deviceType, power: search.power, encryption: search.encryption },
+        });
+      }
+      throw redirect({ to: "/records" });
+    }
   },
   component: AuthPage,
 });
@@ -19,18 +40,31 @@ const inputCls =
 function AuthPage() {
   const { t, lang } = useLang();
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  const goNext = () => {
+    if (search.redirect === "incident") {
+      navigate({
+        to: "/incident",
+        search: { deviceType: search.deviceType, power: search.power, encryption: search.encryption },
+      });
+    } else {
+      navigate({ to: "/records" });
+    }
+  };
+
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) navigate({ to: "/records" });
+      if (event === "SIGNED_IN" && session) goNext();
     });
     return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, search]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,11 +77,11 @@ function AuthPage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        navigate({ to: "/records" });
+        goNext();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/records" });
+        goNext();
       }
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
@@ -58,6 +92,12 @@ function AuthPage() {
 
   const google = async () => {
     setErr(null);
+    if (search.redirect === "incident") {
+      sessionStorage.setItem(
+        "bdea_auth_redirect",
+        JSON.stringify({ deviceType: search.deviceType, power: search.power, encryption: search.encryption })
+      );
+    }
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
@@ -72,6 +112,7 @@ function AuthPage() {
       </div>
 
       <div className="bg-card border border-border p-6 space-y-4">
+        <p className="text-xs text-muted-foreground bg-secondary border-l-4 border-accent p-3">{t.auth.whySignIn}</p>
         <button type="button" onClick={google} disabled={busy}
           className="w-full px-4 py-2 text-sm border border-border bg-background hover:border-primary">
           {t.auth.google}

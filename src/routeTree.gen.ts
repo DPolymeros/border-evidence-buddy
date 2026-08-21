@@ -10,16 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HandbookRouteImport } from './routes/handbook'
+import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRecordsRouteImport } from './routes/_authenticated/records'
 import { Route as AuthenticatedIncidentRouteImport } from './routes/_authenticated/incident'
-import { Route as AuthenticatedDecisionRouteImport } from './routes/_authenticated/decision'
 
 const HandbookRoute = HandbookRouteImport.update({
   id: '/handbook',
   path: '/handbook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DecisionRoute = DecisionRouteImport.update({
+  id: '/decision',
+  path: '/decision',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -46,25 +51,20 @@ const AuthenticatedIncidentRoute = AuthenticatedIncidentRouteImport.update({
   path: '/incident',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedDecisionRoute = AuthenticatedDecisionRouteImport.update({
-  id: '/decision',
-  path: '/decision',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/decision': typeof DecisionRoute
   '/handbook': typeof HandbookRoute
-  '/decision': typeof AuthenticatedDecisionRoute
   '/incident': typeof AuthenticatedIncidentRoute
   '/records': typeof AuthenticatedRecordsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/decision': typeof DecisionRoute
   '/handbook': typeof HandbookRoute
-  '/decision': typeof AuthenticatedDecisionRoute
   '/incident': typeof AuthenticatedIncidentRoute
   '/records': typeof AuthenticatedRecordsRoute
 }
@@ -73,8 +73,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/decision': typeof DecisionRoute
   '/handbook': typeof HandbookRoute
-  '/_authenticated/decision': typeof AuthenticatedDecisionRoute
   '/_authenticated/incident': typeof AuthenticatedIncidentRoute
   '/_authenticated/records': typeof AuthenticatedRecordsRoute
 }
@@ -83,19 +83,19 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/handbook'
     | '/decision'
+    | '/handbook'
     | '/incident'
     | '/records'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/handbook' | '/decision' | '/incident' | '/records'
+  to: '/' | '/auth' | '/decision' | '/handbook' | '/incident' | '/records'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/decision'
     | '/handbook'
-    | '/_authenticated/decision'
     | '/_authenticated/incident'
     | '/_authenticated/records'
   fileRoutesById: FileRoutesById
@@ -104,6 +104,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DecisionRoute: typeof DecisionRoute
   HandbookRoute: typeof HandbookRoute
 }
 
@@ -114,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/handbook'
       fullPath: '/handbook'
       preLoaderRoute: typeof HandbookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decision': {
+      id: '/decision'
+      path: '/decision'
+      fullPath: '/decision'
+      preLoaderRoute: typeof DecisionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -151,24 +159,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIncidentRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/decision': {
-      id: '/_authenticated/decision'
-      path: '/decision'
-      fullPath: '/decision'
-      preLoaderRoute: typeof AuthenticatedDecisionRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedDecisionRoute: typeof AuthenticatedDecisionRoute
   AuthenticatedIncidentRoute: typeof AuthenticatedIncidentRoute
   AuthenticatedRecordsRoute: typeof AuthenticatedRecordsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedDecisionRoute: AuthenticatedDecisionRoute,
   AuthenticatedIncidentRoute: AuthenticatedIncidentRoute,
   AuthenticatedRecordsRoute: AuthenticatedRecordsRoute,
 }
@@ -180,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DecisionRoute: DecisionRoute,
   HandbookRoute: HandbookRoute,
 }
 export const routeTree = rootRouteImport
