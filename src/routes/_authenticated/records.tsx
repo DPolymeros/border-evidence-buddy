@@ -54,7 +54,7 @@ function RecordsPage() {
               <div className="min-w-0">
                 <div className="font-mono text-sm font-semibold break-all">{i.id}</div>
                 <div className="text-xs text-muted-foreground">
-                  {i.deviceType} — {i.make} {i.model} — {new Date(i.createdAt).toLocaleString()}
+                  {t.deviceTypes[i.deviceType as keyof typeof t.deviceTypes] ?? i.deviceType} — {i.make} {i.model} — {new Date(i.createdAt).toLocaleString()}
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 shrink-0">
@@ -81,12 +81,41 @@ function RecordsPage() {
             <button onClick={() => setSelected(null)} className="text-xs">×</button>
           </div>
           <div className="p-4 text-sm grid grid-cols-1 md:grid-cols-2 gap-2">
-            {Object.entries(selected).map(([k, v]) => {
-              if (k === "photo" || !v) return null;
+            {[
+              { key: "id", label: t.incident.evidenceId },
+              { key: "createdAt", label: t.incident.dateTime },
+              { key: "caseNumber", label: t.incident.caseNumber },
+              { key: "dateTime", label: t.incident.dateTime },
+              { key: "location", label: t.incident.location },
+              { key: "borderPoint", label: t.incident.borderPoint },
+              { key: "officerName", label: t.incident.officerName },
+              { key: "badgeId", label: t.incident.badgeId },
+              { key: "agency", label: t.incident.agency },
+              { key: "witnessName", label: t.incident.witnessName },
+              { key: "witnessId", label: t.incident.witnessId },
+              { key: "deviceType", label: t.incident.deviceType },
+              { key: "make", label: t.incident.make },
+              { key: "model", label: t.incident.model },
+              { key: "serial", label: t.incident.serial },
+              { key: "imei", label: t.incident.imei },
+              { key: "condition", label: t.incident.condition },
+              { key: "power", label: t.incident.power },
+              { key: "screenLocked", label: t.incident.screenLocked },
+              { key: "encryption", label: t.incident.encryption },
+              { key: "network", label: t.incident.network },
+              { key: "circumstances", label: t.incident.circumstances },
+            ].map(({ key, label }) => {
+              const v = selected[key as keyof Incident];
+              if (!v) return null;
+              let display = String(v);
+              if (key === "deviceType") display = t.deviceTypes[v as keyof typeof t.deviceTypes] ?? String(v);
+              else if (key === "agency") display = t.agencies[v as keyof typeof t.agencies] ?? String(v);
+              else if (key === "power") display = v === "on" ? t.incident.poweredOn : v === "off" ? t.incident.poweredOff : t.common.unknown;
+              else if (key === "screenLocked" || key === "encryption") display = v === "yes" ? t.common.yes : v === "no" ? t.common.no : t.common.unknown;
               return (
-                <div key={k} className="border-b border-border pb-1">
-                  <span className="text-xs uppercase tracking-wide text-muted-foreground">{k}: </span>
-                  <span>{String(v)}</span>
+                <div key={key} className="border-b border-border pb-1">
+                  <span className="text-xs uppercase tracking-wide text-muted-foreground">{label}: </span>
+                  <span>{display}</span>
                 </div>
               );
             })}
