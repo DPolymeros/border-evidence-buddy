@@ -81,9 +81,12 @@ function RecordsPage() {
                 <div className="text-xs text-muted-foreground">
                   {t.deviceTypes[i.deviceType as keyof typeof t.deviceTypes] ?? i.deviceType} — {i.make} {i.model} — {new Date(i.createdAt).toLocaleString()}
                 </div>
+                <div className="text-xs text-muted-foreground">
+                  {t.handovers.count}: {(i.handovers ?? []).length}
+                </div>
               </div>
               <div className="flex flex-wrap gap-2 shrink-0">
-                <button className="px-3 py-1 text-xs border border-border" onClick={() => setSelected(i)}>{t.common.view}</button>
+                <button className="px-3 py-1 text-xs border border-border" onClick={() => openRecord(i)}>{t.common.view}</button>
                 <button className="px-3 py-1 text-xs border border-border" onClick={() => exportIncidentPdf(i)}>{t.common.exportPdf}</button>
                 <button className="px-3 py-1 text-xs bg-destructive text-destructive-foreground"
                   onClick={async () => {
