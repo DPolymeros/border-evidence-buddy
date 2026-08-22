@@ -32,6 +32,33 @@ const FIELD_ORDER: (keyof Incident)[] = [
   "power", "screenLocked", "encryption", "network", "circumstances",
 ];
 
+const AGENCY_EN: Record<string, string> = { hellenic: "Hellenic Police", frontex: "Frontex", other: "Other" };
+const REASON_EN: Record<string, string> = {
+  transport: "Transport to storage facility",
+  investigation: "Handover to investigation unit",
+  laboratory: "Handover to forensic laboratory",
+  return: "Return to owner",
+  other: "Other",
+};
+const SEAL_EN: Record<string, string> = { intact: "Intact", broken: "Broken", na: "Not applicable" };
+
+const FIELD_VALUE_EN: Partial<Record<keyof Incident, Record<string, string>>> = {
+  agency: AGENCY_EN,
+  deviceType: {
+    smartphone: "Smartphone",
+    laptop: "Laptop",
+    tablet: "Tablet",
+    usb: "USB stick",
+    sim: "SIM card",
+    hdd: "External HDD",
+    drone: "Drone",
+    other: "Other",
+  },
+  power: { on: "Powered on", off: "Powered off", unknown: "Unknown" },
+  screenLocked: { yes: "Yes", no: "No", unknown: "Unknown" },
+  encryption: { yes: "Yes", no: "No", unknown: "Unknown" },
+};
+
 export async function exportIncidentPdf(incident: Incident): Promise<void> {
   if (typeof window === "undefined") return;
   try {
