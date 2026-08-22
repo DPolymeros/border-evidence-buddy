@@ -11,7 +11,8 @@ type IncidentSearch = {
   encryption?: "yes" | "no" | "unknown" | "";
 };
 
-export const Route = createFileRoute("/_authenticated/incident")({
+export const Route = createFileRoute("/incident")({
+  ssr: false,
   component: IncidentPage,
   validateSearch: (s: Record<string, unknown>): IncidentSearch => ({
     deviceType: typeof s.deviceType === "string" ? s.deviceType : undefined,

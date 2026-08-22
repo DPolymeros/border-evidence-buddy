@@ -9,14 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RecordsRouteImport } from './routes/records'
+import { Route as IncidentRouteImport } from './routes/incident'
 import { Route as HandbookRouteImport } from './routes/handbook'
 import { Route as DecisionRouteImport } from './routes/decision'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRecordsRouteImport } from './routes/_authenticated/records'
-import { Route as AuthenticatedIncidentRouteImport } from './routes/_authenticated/incident'
 
+const RecordsRoute = RecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IncidentRoute = IncidentRouteImport.update({
+  id: '/incident',
+  path: '/incident',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HandbookRoute = HandbookRouteImport.update({
   id: '/handbook',
   path: '/handbook',
@@ -27,89 +35,66 @@ const DecisionRoute = DecisionRouteImport.update({
   path: '/decision',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRecordsRoute = AuthenticatedRecordsRouteImport.update({
-  id: '/records',
-  path: '/records',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedIncidentRoute = AuthenticatedIncidentRouteImport.update({
-  id: '/incident',
-  path: '/incident',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/decision': typeof DecisionRoute
   '/handbook': typeof HandbookRoute
-  '/incident': typeof AuthenticatedIncidentRoute
-  '/records': typeof AuthenticatedRecordsRoute
+  '/incident': typeof IncidentRoute
+  '/records': typeof RecordsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/decision': typeof DecisionRoute
   '/handbook': typeof HandbookRoute
-  '/incident': typeof AuthenticatedIncidentRoute
-  '/records': typeof AuthenticatedRecordsRoute
+  '/incident': typeof IncidentRoute
+  '/records': typeof RecordsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
   '/decision': typeof DecisionRoute
   '/handbook': typeof HandbookRoute
-  '/_authenticated/incident': typeof AuthenticatedIncidentRoute
-  '/_authenticated/records': typeof AuthenticatedRecordsRoute
+  '/incident': typeof IncidentRoute
+  '/records': typeof RecordsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/auth'
-    | '/decision'
-    | '/handbook'
-    | '/incident'
-    | '/records'
+  fullPaths: '/' | '/decision' | '/handbook' | '/incident' | '/records'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/decision' | '/handbook' | '/incident' | '/records'
-  id:
-    | '__root__'
-    | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/decision'
-    | '/handbook'
-    | '/_authenticated/incident'
-    | '/_authenticated/records'
+  to: '/' | '/decision' | '/handbook' | '/incident' | '/records'
+  id: '__root__' | '/' | '/decision' | '/handbook' | '/incident' | '/records'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
   DecisionRoute: typeof DecisionRoute
   HandbookRoute: typeof HandbookRoute
+  IncidentRoute: typeof IncidentRoute
+  RecordsRoute: typeof RecordsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/records': {
+      id: '/records'
+      path: '/records'
+      fullPath: '/records'
+      preLoaderRoute: typeof RecordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/incident': {
+      id: '/incident'
+      path: '/incident'
+      fullPath: '/incident'
+      preLoaderRoute: typeof IncidentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/handbook': {
       id: '/handbook'
       path: '/handbook'
@@ -124,20 +109,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DecisionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -145,42 +116,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/records': {
-      id: '/_authenticated/records'
-      path: '/records'
-      fullPath: '/records'
-      preLoaderRoute: typeof AuthenticatedRecordsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/incident': {
-      id: '/_authenticated/incident'
-      path: '/incident'
-      fullPath: '/incident'
-      preLoaderRoute: typeof AuthenticatedIncidentRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedIncidentRoute: typeof AuthenticatedIncidentRoute
-  AuthenticatedRecordsRoute: typeof AuthenticatedRecordsRoute
-}
-
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedIncidentRoute: AuthenticatedIncidentRoute,
-  AuthenticatedRecordsRoute: AuthenticatedRecordsRoute,
-}
-
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
   DecisionRoute: DecisionRoute,
   HandbookRoute: HandbookRoute,
+  IncidentRoute: IncidentRoute,
+  RecordsRoute: RecordsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

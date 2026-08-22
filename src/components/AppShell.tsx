@@ -1,21 +1,9 @@
-import { Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link, Outlet, useLocation } from "@tanstack/react-router";
 import { LangProvider, useLang } from "@/lib/lang";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 function Header() {
   const { lang, setLang, t } = useLang();
   const location = useLocation();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user?.email ?? null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setEmail(session?.user?.email ?? null);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   const link = (to: string, label: string) => {
     const active = location.pathname === to;
@@ -29,11 +17,6 @@ function Header() {
         {label}
       </Link>
     );
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate({ to: "/auth" });
   };
 
   return (
@@ -58,18 +41,6 @@ function Header() {
             <button onClick={() => setLang("en")}
               className={`px-2 py-1 text-xs font-semibold ${lang === "en" ? "bg-primary-foreground text-primary" : "text-primary-foreground"}`}>EN</button>
           </div>
-          {email ? (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-primary-foreground/80 hidden sm:inline">{email}</span>
-              <button onClick={signOut} className="text-xs px-2 py-1 border border-primary-foreground/40 hover:bg-primary-foreground/10">
-                {t.auth.signOut}
-              </button>
-            </div>
-          ) : (
-            <Link to="/auth" className="text-xs px-2 py-1 border border-primary-foreground/40 hover:bg-primary-foreground/10">
-              {t.auth.signIn}
-            </Link>
-          )}
         </div>
       </div>
       <nav className="bg-background border-b border-border">

@@ -5,7 +5,7 @@ import { clearAll, deleteIncident, loadIncidents, saveIncident, type Handover, t
 import { exportIncidentPdf } from "@/lib/pdf";
 import { emptyHandover, HandoverFields } from "@/components/HandoverEditor";
 
-export const Route = createFileRoute("/_authenticated/records")({
+export const Route = createFileRoute("/records")({
   component: RecordsPage,
 });
 
