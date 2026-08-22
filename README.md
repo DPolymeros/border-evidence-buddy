@@ -90,6 +90,12 @@ MIT License — see `LICENSE` file for details.
 
 The embedded Noto Sans font used for PDF export is licensed under the SIL Open Font License, Version 1.1 — see `licenses/NotoSans-OFL.txt`.
 
+## Version
+
+- **Current release**: v1.1 (22 August 2026), the version evaluated in the MSc dissertation *Digital Evidence Handling by First Responders at EU External Borders*.
+- **Live prototype**: https://border-evidence-buddy.lovable.app/
+- **Storage**: browser localStorage only. No server, no database, no authentication.
+- The PDF export embeds Noto Sans, licensed under the SIL Open Font License 1.1. See `licenses/NotoSans-OFL.txt`.
 
 ## Citation
 
