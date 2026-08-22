@@ -1,27 +1,44 @@
-import {
-  listIncidentsFn,
-  saveIncidentFn,
-  deleteIncidentFn,
-  clearIncidentsFn,
-} from "./incidents.functions";
 import type { Incident } from "./incidents.shape";
 
 export type { Incident, Handover } from "./incidents.shape";
 
+const KEY = "bdea_incidents";
+
+function read(): Incident[] {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as Incident[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function write(items: Incident[]): void {
+  localStorage.setItem(KEY, JSON.stringify(items));
+}
+
 export async function loadIncidents(): Promise<Incident[]> {
-  return await listIncidentsFn();
+  return read()
+    .map((i) => ({ ...i, handovers: Array.isArray(i.handovers) ? i.handovers : [] }))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export async function saveIncident(i: Incident): Promise<void> {
-  await saveIncidentFn({ data: i });
+  const items = read();
+  const idx = items.findIndex((x) => x.id === i.id);
+  if (idx >= 0) items[idx] = i;
+  else items.push(i);
+  write(items);
 }
 
 export async function deleteIncident(id: string): Promise<void> {
-  await deleteIncidentFn({ data: { id } });
+  write(read().filter((x) => x.id !== id));
 }
 
 export async function clearAll(): Promise<void> {
-  await clearIncidentsFn();
+  write([]);
 }
 
 export function generateEvidenceId(): string {
