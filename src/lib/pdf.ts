@@ -80,17 +80,17 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
     doc.setFillColor(30, 50, 95);
     doc.rect(0, 0, pageW, 70, "F");
     doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
+    doc.setFont("NotoSans", "bold");
     doc.setFontSize(18);
     doc.text("BDEA", margin, 32);
-    doc.setFont("helvetica", "normal");
+    doc.setFont("NotoSans", "normal");
     doc.setFontSize(10);
     doc.text("Border Digital Evidence Assistant", margin, 48);
     doc.text("Chain of Custody Document", margin, 60);
 
     doc.setTextColor(0, 0, 0);
     let y = 100;
-    doc.setFont("helvetica", "bold");
+    doc.setFont("NotoSans", "bold");
     doc.setFontSize(13);
     doc.text(`Evidence ID: ${incident.id}`, margin, y);
     y += 22;
@@ -109,9 +109,9 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
       const lines = doc.splitTextToSize(String(display), valueW);
       const blockH = Math.max(14, lines.length * 12 + 4);
       if (y + blockH > pageH - margin - 30) { doc.addPage(); y = margin; }
-      doc.setFont("helvetica", "bold");
+      doc.setFont("NotoSans", "bold");
       doc.text(`${label}:`, margin, y);
-      doc.setFont("helvetica", "normal");
+      doc.setFont("NotoSans", "normal");
       doc.text(lines, margin + labelW, y);
       y += blockH;
     }
@@ -119,19 +119,19 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
     const handovers = incident.handovers ?? [];
     y += 20;
     if (y + 40 > pageH - margin - 30) { doc.addPage(); y = margin; }
-    doc.setFont("helvetica", "bold");
+    doc.setFont("NotoSans", "bold");
     doc.setFontSize(12);
     doc.text("Chain of Custody Handovers", margin, y);
     y += 18;
     doc.setFontSize(10);
     if (handovers.length === 0) {
-      doc.setFont("helvetica", "normal");
+      doc.setFont("NotoSans", "normal");
       doc.text("No handovers recorded.", margin, y);
       y += 14;
     } else {
       for (const h of handovers) {
         if (y + 60 > pageH - margin - 30) { doc.addPage(); y = margin; }
-        doc.setFont("helvetica", "bold");
+        doc.setFont("NotoSans", "bold");
         doc.text(`Handover #${h.seq}`, margin, y);
         y += 14;
         const entries: [string, string][] = [
@@ -153,15 +153,15 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
           const lines = doc.splitTextToSize(String(val), valueW);
           const blockH = Math.max(14, lines.length * 12 + 4);
           if (y + blockH > pageH - margin - 30) { doc.addPage(); y = margin; }
-          doc.setFont("helvetica", "bold");
+          doc.setFont("NotoSans", "bold");
           doc.text(`${label}:`, margin, y);
-          doc.setFont("helvetica", "normal");
+          doc.setFont("NotoSans", "normal");
           doc.text(lines, margin + labelW, y);
           y += blockH;
         }
         if (y + 60 > pageH - margin - 30) { doc.addPage(); y = margin; }
         y += 12;
-        doc.setFont("helvetica", "bold");
+        doc.setFont("NotoSans", "bold");
         doc.text("Releasing officer signature:", margin, y);
         doc.text("Receiving officer signature:", pageW / 2 + 10, y);
         doc.setDrawColor(0, 0, 0);
@@ -175,7 +175,7 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
     if (incident.photo && incident.photo.startsWith("data:image/")) {
       const imgH = 220;
       if (y + imgH + 20 > pageH - margin - 30) { doc.addPage(); y = margin; }
-      doc.setFont("helvetica", "bold");
+      doc.setFont("NotoSans", "bold");
       doc.text("Photo:", margin, y);
       y += 14;
       try {
@@ -187,7 +187,7 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
 
     if (y + 80 > pageH - margin - 30) { doc.addPage(); y = margin; }
     y += 20;
-    doc.setFont("helvetica", "bold");
+    doc.setFont("NotoSans", "bold");
     doc.text("Officer signature:", margin, y);
     doc.text("Witness signature:", pageW / 2 + 10, y);
     doc.setDrawColor(0, 0, 0);
@@ -197,7 +197,7 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
-      doc.setFont("helvetica", "italic");
+      doc.setFont("NotoSans", "italic");
       doc.setFontSize(8);
       doc.setTextColor(110, 110, 110);
       doc.text("BDEA — Academic prototype, not for operational deployment", margin, pageH - 24);
