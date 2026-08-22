@@ -88,6 +88,9 @@ These are discussed in the dissertation as directions for future work.
 
 MIT License — see `LICENSE` file for details.
 
+The embedded Noto Sans font used for PDF export is licensed under the SIL Open Font License, Version 1.1 — see `licenses/NotoSans-OFL.txt`.
+
+
 ## Citation
 
 If referencing this work:
