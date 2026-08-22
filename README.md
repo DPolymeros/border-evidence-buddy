@@ -97,8 +97,6 @@ The embedded Noto Sans font used for PDF export is licensed under the SIL Open F
 - **Storage**: browser localStorage only. No server, no database, no authentication.
 - The PDF export embeds Noto Sans, licensed under the SIL Open Font License 1.1. See `licenses/NotoSans-OFL.txt`.
 
-
-
 ## Citation
 
 If referencing this work:
