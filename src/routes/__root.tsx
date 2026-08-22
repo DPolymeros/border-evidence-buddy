@@ -11,7 +11,6 @@ import {
 
 import appCss from "../styles.css?url";
 import { AppShell } from "@/components/AppShell";
-import { supabase } from "@/integrations/supabase/client";
 
 
 function NotFoundComponent() {
@@ -117,35 +116,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const router = useRouter();
-
-  React.useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-      router.invalidate();
-      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
-      if (event === "SIGNED_IN") {
-        const pending = sessionStorage.getItem("bdea_auth_redirect");
-        if (pending) {
-          sessionStorage.removeItem("bdea_auth_redirect");
-          try {
-            const s = JSON.parse(pending) as { deviceType?: string; power?: string; encryption?: string };
-            router.navigate({
-              to: "/incident",
-              search: {
-                deviceType: s.deviceType,
-                power: s.power as "yes" | "no" | "unknown" | undefined,
-                encryption: s.encryption as "yes" | "no" | "unknown" | undefined,
-              },
-            });
-          } catch {
-            /* ignore malformed pending redirect */
-          }
-        }
-      }
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
