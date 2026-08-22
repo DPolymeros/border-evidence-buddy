@@ -32,6 +32,33 @@ const FIELD_ORDER: (keyof Incident)[] = [
   "power", "screenLocked", "encryption", "network", "circumstances",
 ];
 
+const AGENCY_EN: Record<string, string> = { hellenic: "Hellenic Police", frontex: "Frontex", other: "Other" };
+const REASON_EN: Record<string, string> = {
+  transport: "Transport to storage facility",
+  investigation: "Handover to investigation unit",
+  laboratory: "Handover to forensic laboratory",
+  return: "Return to owner",
+  other: "Other",
+};
+const SEAL_EN: Record<string, string> = { intact: "Intact", broken: "Broken", na: "Not applicable" };
+
+const FIELD_VALUE_EN: Partial<Record<keyof Incident, Record<string, string>>> = {
+  agency: AGENCY_EN,
+  deviceType: {
+    smartphone: "Smartphone",
+    laptop: "Laptop",
+    tablet: "Tablet",
+    usb: "USB stick",
+    sim: "SIM card",
+    hdd: "External HDD",
+    drone: "Drone",
+    other: "Other",
+  },
+  power: { on: "Powered on", off: "Powered off", unknown: "Unknown" },
+  screenLocked: { yes: "Yes", no: "No", unknown: "Unknown" },
+  encryption: { yes: "Yes", no: "No", unknown: "Unknown" },
+};
+
 export async function exportIncidentPdf(incident: Incident): Promise<void> {
   if (typeof window === "undefined") return;
   try {
@@ -71,7 +98,8 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
       const raw = incident[key];
       if (raw === undefined || raw === null || raw === "") continue;
       const label = FIELD_LABELS[key] ?? key;
-      const lines = doc.splitTextToSize(String(raw), valueW);
+      const display = FIELD_VALUE_EN[key]?.[String(raw)] ?? raw;
+      const lines = doc.splitTextToSize(String(display), valueW);
       const blockH = Math.max(14, lines.length * 12 + 4);
       if (y + blockH > pageH - margin - 30) { doc.addPage(); y = margin; }
       doc.setFont("helvetica", "bold");
@@ -81,17 +109,8 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
       y += blockH;
     }
 
-    const AGENCY_EN: Record<string, string> = { hellenic: "Hellenic Police", frontex: "Frontex", other: "Other" };
-    const REASON_EN: Record<string, string> = {
-      transport: "Transport to storage facility",
-      investigation: "Handover to investigation unit",
-      laboratory: "Handover to forensic laboratory",
-      return: "Return to owner",
-      other: "Other",
-    };
-    const SEAL_EN: Record<string, string> = { intact: "Intact", broken: "Broken", na: "Not applicable" };
-
     const handovers = incident.handovers ?? [];
+    y += 20;
     if (y + 40 > pageH - margin - 30) { doc.addPage(); y = margin; }
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
@@ -142,6 +161,7 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
         doc.line(margin, y + 30, margin + 200, y + 30);
         doc.line(pageW / 2 + 10, y + 30, pageW / 2 + 210, y + 30);
         y += 48;
+        y += 18;
       }
     }
 

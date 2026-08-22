@@ -192,6 +192,7 @@ export const translations = {
       sealState: "Seal state on receipt",
       sealNumber: "Seal or bag number",
       notes: "Remarks",
+      empty: "No handovers recorded yet.",
       reasons: {
         transport: "Transport to storage facility",
         investigation: "Handover to investigation unit",
@@ -411,6 +412,7 @@ export const translations = {
       sealState: "Κατάσταση σφράγισης κατά την παραλαβή",
       sealNumber: "Αριθμός σφραγίδας ή σάκου",
       notes: "Παρατηρήσεις",
+      empty: "Δεν έχει καταγραφεί καμία μεταβίβαση.",
       reasons: {
         transport: "Μεταφορά σε χώρο φύλαξης",
         investigation: "Παράδοση σε ανακριτική μονάδα",
