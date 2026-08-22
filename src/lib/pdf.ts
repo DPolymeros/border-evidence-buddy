@@ -66,6 +66,13 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const JsPDFCtor: typeof import("jspdf").jsPDF = (mod as any).jsPDF ?? (mod as any).default;
     const doc = new JsPDFCtor({ unit: "pt", format: "a4" });
+    const fonts = await import("./pdf-fonts");
+    doc.addFileToVFS("NotoSans-Regular.ttf", fonts.NOTO_SANS_REGULAR_B64);
+    doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+    doc.addFont("NotoSans-Regular.ttf", "NotoSans", "italic");
+    doc.addFileToVFS("NotoSans-Bold.ttf", fonts.NOTO_SANS_BOLD_B64);
+    doc.addFont("NotoSans-Bold.ttf", "NotoSans", "bold");
+    doc.setFont("NotoSans", "normal");
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
     const margin = 48;
