@@ -12,6 +12,7 @@ type IncidentSearch = {
 };
 
 export const Route = createFileRoute("/incident")({
+  ssr: false,
   component: IncidentPage,
   validateSearch: (s: Record<string, unknown>): IncidentSearch => ({
     deviceType: typeof s.deviceType === "string" ? s.deviceType : undefined,
