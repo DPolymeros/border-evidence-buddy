@@ -213,6 +213,9 @@ function IncidentPage() {
         {step === 6 && (
           <>
             <h2 className="font-semibold text-lg">{t.handovers.title}</h2>
+            {data.handovers.length === 0 && (
+              <p className="text-sm text-muted-foreground">{t.handovers.empty}</p>
+            )}
             {data.handovers.map((h, idx) => (
               <div key={idx} className="border border-border p-4 space-y-3">
                 <div className="flex items-center justify-between">

@@ -161,6 +161,7 @@ export async function exportIncidentPdf(incident: Incident): Promise<void> {
         doc.line(margin, y + 30, margin + 200, y + 30);
         doc.line(pageW / 2 + 10, y + 30, pageW / 2 + 210, y + 30);
         y += 48;
+        y += 18;
       }
     }
 
