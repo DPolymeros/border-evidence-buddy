@@ -6,7 +6,7 @@
 
 The Border Digital Evidence Assistant (BDEA) is a bilingual (English/Greek) web application developed as the practical artifact of an MSc dissertation at the **University of East London**, in the programme *Information Security and Digital Forensics*.
 
-The application operationalises selected principles from established digital forensics frameworks (ACPO, INTERPOL, ENISA, NIST SP 800-86, and ISO/IEC 27001) for first responders at EU external borders, with particular focus on the operational reality of Frontex officers and Hellenic Police officers handling seized digital devices.
+The application operationalises selected principles from established digital forensics frameworks (ACPO, INTERPOL, ENISA, NIST SP 800-86, ISO/IEC 27037, and ISO/IEC 27001) for first responders at EU external borders, with particular focus on the operational reality of Frontex officers and Hellenic Police officers handling seized digital devices.
 
 ## Academic Context
 
@@ -25,8 +25,8 @@ BDEA addresses two empirically documented gaps in the digital evidence handling 
 
 ## Features
 
-- **Chain of Custody**: Structured digital form with mandatory fields aligned with ACPO and INTERPOL principles
-- **Photographic Documentation**: Capture of device images with timestamp and geolocation metadata
+- **Chain of Custody**: Structured digital form aligned with ACPO and INTERPOL principles
+- **Photographic Documentation**: Device photograph attached to the record; time and location stored as separate fields
 - **Multi-User Handover Log**: Documentation of evidence transfers between officers and agencies
 - **Decision Support Wizard**: Contextual, scenario-based guidance for first responders based on device type and condition
 - **PDF Report Export**: Generation of formal chain of custody documentation
@@ -37,7 +37,7 @@ BDEA addresses two empirically documented gaps in the digital evidence handling 
 - **Frontend**: React + TypeScript
 - **Styling**: Tailwind CSS
 - **Build tool**: Vite
-- **Data persistence**: Browser local storage (no backend, GDPR-conscious by design)
+- **Data persistence**: Browser local storage (no backend, Law Enforcement Directive (EU) 2016/680)
 - **PDF generation**: jsPDF
 - **Development**: AI-assisted prototyping (Lovable platform)
 
@@ -45,14 +45,14 @@ BDEA addresses two empirically documented gaps in the digital evidence handling 
 
 > This application is an **academic prototype** developed for research purposes only.  
 > It is **not intended for operational law enforcement deployment** in its current form.  
-> Production deployment would require formal security audit, penetration testing, accessibility review, and full GDPR Article 32 compliance assessment.
+> Production deployment would require formal security audit, penetration testing, accessibility review, and full Article 27 of Directive (EU) 2016/680 compliance assessment.
 
 ## Installation (local execution)
 
 Requires Node.js 18+ and npm.
 
 ```bash
-git clone https://github.com/[your-username]/[repository-name].git
+git clone https://github.com/DPolymeros/border-evidence-buddy.git
 cd [repository-name]
 npm install
 npm run dev
@@ -64,7 +64,7 @@ The application will be accessible at `http://localhost:5173` (or as indicated i
 
 The functional design of BDEA is informed by the following frameworks:
 
-- ACPO (2011) *Good Practice Guide for Digital Evidence*, Version 5
+- ACPO (2012) *Good Practice Guide for Digital Evidence*, Version 5
 - INTERPOL (2021) *Guidelines for Digital Forensics First Responders*
 - ENISA (2014) *Electronic Evidence — A Basic Guide for First Responders*
 - NIJ (2008) *Electronic Crime Scene Investigation: A Guide for First Responders*, Second Edition
