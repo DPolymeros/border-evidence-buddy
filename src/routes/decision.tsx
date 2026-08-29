@@ -34,7 +34,7 @@ function buildResult(a: Answers, t: ReturnType<typeof useLang>["t"]) {
 
   const iso = a.poweredOn === "yes" ? t.decision.isoLive : t.decision.isoOff;
   const acpo = a.poweredOn === "yes" ? t.decision.acpoLive : t.decision.acpoOff;
-  return { actions, iso, acpo, legal: t.decision.legalPlaceholder };
+  return { actions, iso, acpo, legal: t.decision.legalArt265 };
 }
 
 function DecisionPage() {
